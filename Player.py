@@ -48,6 +48,8 @@ class Player(pygame.sprite.Sprite):
                 self.vel.y = -3
  
     def update(self, platformGroup):
+        self.move()
+        
         hits = pygame.sprite.spritecollide(self, platformGroup, False)
         if self.vel.y > 0:        
             if hits:

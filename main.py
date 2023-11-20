@@ -67,7 +67,7 @@ def destroy_offscreen_entities():
                 coin.kill()
 
 def render_score():   
-    score  = font.render(str(Player1.score), True, (123,255,0))   
+    score=font.render(str(Player1.score),True,(123,255,0))   
     displaysurface.blit(score, (WIDTH/2, 10))   
 
 def initialize_platforms():
@@ -88,7 +88,7 @@ platformGroup = pygame.sprite.Group()
 coinGroup = pygame.sprite.Group()
         
 PT1 = Platform(450, 80) 
-PT1.rect = PT1.surf.get_rect(center = (WIDTH/2, HEIGHT - 10))
+PT1.rect = PT1.surf.get_rect(center= (WIDTH/2, HEIGHT-10))
 PT1.moving = False
 PT1.point = False 
  
@@ -102,6 +102,7 @@ initialize_platforms()
 # END - Initialization Code
 
 while True:
+    # Event Loop
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -113,6 +114,7 @@ while True:
             if event.key == pygame.K_SPACE:
                 Player1.cancel_jump()
 
+    # Game over if Player falls below the screen
     if Player1.rect.top > HEIGHT:
         game_over()
 
@@ -122,16 +124,13 @@ while True:
     generate_platforms()  # Generate new platforms 
     render_score()  # Update and render score
      
+    # Update and render all sprites
     for entity in spritesGroup:
         displaysurface.blit(entity.surf, entity.rect)
-        if type(entity) == Platform:
-            entity.move(Player1)
+        if type(entity)== Platform or type(entity)== Coin:
+            entity.update(Player1)
         else:
-            entity.move()
-
-    for coin in coinGroup:
-        displaysurface.blit(coin.surf, coin.rect)
-        coin.update(Player1)
+            entity.update()
  
     pygame.display.update()
     FramePerSec.tick(FPS)

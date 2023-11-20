@@ -22,7 +22,7 @@ class Platform(pygame.sprite.Sprite):
         if (self.speed == 0):
             self.moving == False
  
-    def move(self, player):
+    def update(self, player):
         hits = self.rect.colliderect(player.rect)
         if self.moving == True:  
             self.rect.move_ip(self.speed,0)
