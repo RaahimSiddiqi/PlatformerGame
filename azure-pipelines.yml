@@ -7,13 +7,21 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'  # Choose the appropriate Python version
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    python -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    pip install pytest
+  displayName: 'Install dependencies'
+
+- script: |
+    python -m pytest
+  displayName: 'Run pytest'
+
