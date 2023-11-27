@@ -1,5 +1,5 @@
 import pygame
-import random
+from random import randint
 from Coin import Coin
 from constants import WIDTH, HEIGHT 
 
@@ -8,16 +8,16 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
 
         if width == 0:
-            width = random.randint(50, 120)
+            width = randint(50, 120)
 
         self.image = pygame.image.load("assets/platform.png")
         self.surf = pygame.transform.scale(self.image, (width, height))
-        self.rect = self.surf.get_rect(center = (random.randint(0,WIDTH-10),
-                                               random.randint(0, HEIGHT-30)))
+        self.rect = self.surf.get_rect(center=(randint(0, WIDTH-10),
+                                               randint(0, HEIGHT-30)))
 
         self.point = True   
         self.moving = True
-        self.speed = random.randint(-1, 1)
+        self.speed = randint(-1, 1)
 
         if (self.speed == 0):
             self.moving == False
@@ -33,6 +33,8 @@ class Platform(pygame.sprite.Sprite):
             if self.speed < 0 and self.rect.right < 0:
                 self.rect.left = WIDTH
 
-    def generateCoin(self, coinGroup):
+    def generateCoin(self, coinGroup, spritesGroup):
         if (self.speed == 0):
-            coinGroup.add(Coin((self.rect.centerx, self.rect.centery - 50)))
+            coin = Coin((self.rect.centerx, self.rect.centery - 50))
+            coinGroup.add(coin)
+            spritesGroup.add(coin)

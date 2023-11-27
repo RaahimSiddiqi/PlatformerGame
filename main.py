@@ -13,7 +13,7 @@ pygame.init()
 FramePerSec = pygame.time.Clock()
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Platformer Game")
-background = pygame.image.load("assets/platform.png")
+background = pygame.image.load("assets/background.png")
 font = pygame.font.SysFont("Verdana", 20)
 
 def check(platform, groupies):
@@ -38,7 +38,7 @@ def generate_platforms():
              p.rect.center = (randrange(0, WIDTH-width), randrange(-50, 0))
              C = check(p, platformGroup)
 
-        p.generateCoin(coinGroup)
+        p.generateCoin(coinGroup, spritesGroup)
         platformGroup.add(p)
         spritesGroup.add(p)
  
@@ -77,7 +77,7 @@ def initialize_platforms():
         while C:
             pl = Platform()
             C = check(pl, platformGroup)
-        pl.generateCoin(coinGroup)
+        pl.generateCoin(coinGroup, spritesGroup)
         platformGroup.add(pl)
         spritesGroup.add(pl)
 
@@ -119,7 +119,6 @@ while True:
         game_over()
 
     displaysurface.blit(background, (0,0))  # Clear screen
-    Player1.update(platformGroup) # Update Player
     destroy_offscreen_entities()  # Clear outdated entries    
     generate_platforms()  # Generate new platforms 
     render_score()  # Update and render score
@@ -127,8 +126,10 @@ while True:
     # Update and render all sprites
     for entity in spritesGroup:
         displaysurface.blit(entity.surf, entity.rect)
-        if type(entity)== Platform or type(entity)== Coin:
+        if type(entity) == Platform or type(entity) == Coin:
             entity.update(Player1)
+        elif type(entity) == Player:
+            entity.update(platformGroup)
         else:
             entity.update()
  
