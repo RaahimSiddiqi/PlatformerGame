@@ -1,7 +1,7 @@
 import pygame
 from random import randint
-from Coin import Coin
-from constants import WIDTH, HEIGHT 
+from .Coin import Coin
+from .constants import WIDTH, HEIGHT 
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, width = 0, height = 18):

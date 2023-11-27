@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from constants import FRIC, WIDTH, ACC
+from .constants import FRIC, WIDTH, ACC
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -13,22 +13,25 @@ class Player(pygame.sprite.Sprite):
         self.acc = pygame.math.Vector2(0,0)
         self.jumping = False
         self.score = 0 
+
+    def change_acceleration(self, keys):
+        if keys[K_LEFT]:
+            self.surf = pygame.image.load("assets/snowman_L.png")
+            self.acc.x = -ACC
+        if keys[K_RIGHT]:
+            self.surf = pygame.image.load("assets/snowman_R.png")
+            self.acc.x = ACC
  
     def move(self):
         self.acc = pygame.math.Vector2(0,0.5)
-        pressed_keys = pygame.key.get_pressed()
+        self.change_acceleration(pygame.key.get_pressed())
                 
-        if pressed_keys[K_LEFT]:
-            self.surf = pygame.image.load("assets/snowman_L.png")
-            self.acc.x = -ACC
-        if pressed_keys[K_RIGHT]:
-            self.surf = pygame.image.load("assets/snowman_R.png")
-            self.acc.x = ACC
-                 
         self.acc.x += self.vel.x * FRIC
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
-         
+        self.update_position()
+        
+    def update_position(self):
         if self.pos.x > WIDTH + 20:
             self.pos.x = 0
         if self.pos.x < -20:
@@ -41,6 +44,8 @@ class Player(pygame.sprite.Sprite):
         if hits and not self.jumping:
            self.jumping = True
            self.vel.y = -15
+           return True
+        return False
  
     def cancel_jump(self):
         if self.jumping:

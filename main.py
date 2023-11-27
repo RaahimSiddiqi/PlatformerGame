@@ -3,29 +3,20 @@ from pygame.locals import *
 import sys
 import time
 from random import randint, randrange
-from Platform import Platform
-from Player import Player
-from Coin import Coin
-from constants import WIDTH, HEIGHT, FPS
+from src.Platform import Platform
+from src.Player import Player
+from src.Coin import Coin
+from src.constants import WIDTH, HEIGHT, FPS
 
-pygame.init()
- 
-FramePerSec = pygame.time.Clock()
-displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Platformer Game")
-background = pygame.image.load("assets/background.png")
-font = pygame.font.SysFont("Verdana", 20)
 
-def check(platform, groupies):
-    if pygame.sprite.spritecollideany(platform,groupies):
-        return True
-    else:
-        for entity in groupies:
-            if entity == platform:
-                continue
-            if (abs(platform.rect.top - entity.rect.bottom) < 40) and (abs(platform.rect.bottom - entity.rect.top) < 40):
+def check(sprite, group, margin=40):
+    for other_sprite in group:
+        if sprite != other_sprite:
+            distance_y = abs(sprite.rect.centery - other_sprite.rect.centery)
+            
+            if distance_y < margin:
                 return True
-        C = False 
+    return False
  
 def generate_platforms():
     while len(platformGroup) < 6:
@@ -82,56 +73,65 @@ def initialize_platforms():
         spritesGroup.add(pl)
 
 
-# START - Initialization code
-spritesGroup = pygame.sprite.Group()
-platformGroup = pygame.sprite.Group()
-coinGroup = pygame.sprite.Group()
+if __name__ == "__main__":
+    pygame.init()
+
+    FramePerSec = pygame.time.Clock()
+    displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Platformer Game")
+    background = pygame.image.load("assets/background.png")
+    font = pygame.font.SysFont("Verdana", 20)
+
+    # START - Initialization code
+    spritesGroup = pygame.sprite.Group()
+    platformGroup = pygame.sprite.Group()
+    coinGroup = pygame.sprite.Group()
         
-PT1 = Platform(450, 80) 
-PT1.rect = PT1.surf.get_rect(center= (WIDTH/2, HEIGHT-10))
-PT1.moving = False
-PT1.point = False 
- 
-Player1 = Player()
+    PT1 = Platform(450, 80) 
+    PT1.rect = PT1.surf.get_rect(center= (WIDTH/2, HEIGHT-10))
+    PT1.moving = False
+    PT1.point = False 
 
-spritesGroup.add(PT1)
-spritesGroup.add(Player1)
-platformGroup.add(PT1)
+    Player1 = Player()
 
-initialize_platforms()
-# END - Initialization Code
+    spritesGroup.add(PT1)
+    spritesGroup.add(Player1)
+    platformGroup.add(PT1)
 
-while True:
-    # Event Loop
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:    
-            if event.key == pygame.K_SPACE:
-                Player1.jump(platformGroup)
-        if event.type == pygame.KEYUP:    
-            if event.key == pygame.K_SPACE:
-                Player1.cancel_jump()
+    initialize_platforms()
+    # END - Initialization Code
 
-    # Game over if Player falls below the screen
-    if Player1.rect.top > HEIGHT:
-        game_over()
+    while True:
+        # Event Loop
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:    
+                if event.key == pygame.K_SPACE:
+                    Player1.jump(platformGroup)
+            if event.type == pygame.KEYUP:    
+                if event.key == pygame.K_SPACE:
+                    Player1.cancel_jump()
 
-    displaysurface.blit(background, (0,0))  # Clear screen
-    destroy_offscreen_entities()  # Clear outdated entries    
-    generate_platforms()  # Generate new platforms 
-    render_score()  # Update and render score
-     
-    # Update and render all sprites
-    for entity in spritesGroup:
-        displaysurface.blit(entity.surf, entity.rect)
-        if type(entity) == Platform or type(entity) == Coin:
-            entity.update(Player1)
-        elif type(entity) == Player:
-            entity.update(platformGroup)
-        else:
-            entity.update()
- 
-    pygame.display.update()
-    FramePerSec.tick(FPS)
+        # Game over if Player falls below the screen
+        if Player1.rect.top > HEIGHT:
+            game_over()
+
+        displaysurface.blit(background, (0,0))  # Clear screen
+        destroy_offscreen_entities()  # Clear outdated entries    
+        generate_platforms()  # Generate new platforms 
+        render_score()  # Update and render score
+        
+        # Update and render all sprites
+        for entity in spritesGroup:
+            displaysurface.blit(entity.surf, entity.rect)
+            if type(entity) == Platform or type(entity) == Coin:
+                entity.update(Player1)
+            elif type(entity) == Player:
+                entity.update(platformGroup)
+            else:
+                entity.update()
+    
+        pygame.display.update()
+        FramePerSec.tick(FPS)
