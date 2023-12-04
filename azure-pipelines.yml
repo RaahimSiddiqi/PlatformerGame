@@ -8,7 +8,6 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-  name: "SelfHosted"
 
 steps:
 - task: UsePythonVersion@0
