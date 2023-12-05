@@ -8,7 +8,7 @@ from src.Player import Player
 from src.Coin import Coin
 from src.constants import WIDTH, HEIGHT, FPS
 
-# Comment
+# Comment for triggering pipeline
 
 def check(sprite, group, margin=40):
     for other_sprite in group:
